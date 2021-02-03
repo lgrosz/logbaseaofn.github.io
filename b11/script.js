@@ -379,8 +379,16 @@ HTMLActuator.prototype.addTile = function (tile) {
   // We can't use classlist because it somehow glitches when replacing classes
   var classes = ["tile", "tile-" + Math.pow(2, log(this.base, tile.value)), positionClass];
   this.applyClasses(element, classes);
-
+  
   element.textContent = tile.value;
+
+  // calculate width
+  var width = getTextWidth(tile.value, 'bold 55px arial');
+  if (width > 100) {
+    var scale = 100 / width;
+    var newFontSize = 55 * scale;
+    element.style.fontSize = `${newFontSize}px`;
+  }
 
   if (tile.previousPosition) {
     // Make sure that the tile gets rendered in the previous position first
@@ -573,3 +581,11 @@ Tile.prototype.updatePosition = function (position) {
 function log(b, n) {
   return Math.round(Math.log(n) / Math.log(b));
 }
+
+function getTextWidth(text, font) {
+  var canvas = document.createElement("canvas");
+  var ctx = canvas.getContext("2d");
+  ctx.font = font;
+  return ctx.measureText(text).width;
+}
+
